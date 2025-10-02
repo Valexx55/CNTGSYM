@@ -9,11 +9,9 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
-import android.provider.Browser
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.Toast
-import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import edu.cas.cntgsym.R
 import edu.cas.cntgsym.util.Constantes
@@ -48,7 +46,7 @@ class PlayService : Service() {
 
         fun stop(context: Context)
         {
-            mediaPlayer!!.stop()
+            mediaPlayer?.stop()
             sonando=false
             mediaPlayer=null
             //paro el servicio
@@ -115,6 +113,8 @@ class PlayService : Service() {
         super.onDestroy()
         Log.d(Constantes.ETIQUETA_LOG, "En onDestroy() de PlayServicio")
         Toast.makeText(this, "Parando servicio onDestroy", Toast.LENGTH_SHORT).show()
+        // después de finalizar el proceso, paro la música
+        stop(this)
     }
 
 
@@ -128,7 +128,8 @@ class PlayService : Service() {
         var intentActivity: PendingIntent? = null
 
         val notificationIntent: Intent = Intent(this, PlayActivity::class.java)
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        //notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         intentActivity = PendingIntent.getActivity(
             this, 100, notificationIntent,
             PendingIntent.FLAG_IMMUTABLE
@@ -145,6 +146,7 @@ class PlayService : Service() {
         return pedingIntent
     }
 
+
     //esta clase recibirá la señal de cerrar la notificación
     class NotificationCloseButtonHandler : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -159,7 +161,7 @@ class PlayService : Service() {
             //lo detengo
             stopSelf()
             //paro la música
-            stop()
+
              */
 
         }
