@@ -26,6 +26,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import edu.cas.cntgsym.bdpersona.ActivityPersonaDB
 import edu.cas.cntgsym.biometrico.BioActivity
 import edu.cas.cntgsym.descargar.DescargaActivity
 import edu.cas.cntgsym.formulario.FormularioActivity
@@ -69,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         //startActivity(Intent(this, BioActivity::class.java))
         //startActivity(Intent(this, DescargaActivity::class.java))
         //startActivity(Intent(this, PlayActivity::class.java))
+        startActivity(Intent(this, ActivityPersonaDB::class.java))
         //startActivity()
         //Log.v(Constantes.ETIQUETA_LOG, "PRUEBA LOG VERBOSE")
         //mostrarAppsInstaladas()
