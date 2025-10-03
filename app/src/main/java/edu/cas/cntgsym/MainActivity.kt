@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.registerForActivityResult
@@ -20,12 +21,20 @@ import edu.cas.cntgsym.contactos.SeleccionContactosActivity
 import edu.cas.cntgsym.contactos.SeleccionContactosActivityPermisos
 import edu.cas.cntgsym.util.Constantes
 import androidx.core.content.edit
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import edu.cas.cntgsym.biometrico.BioActivity
 import edu.cas.cntgsym.descargar.DescargaActivity
 import edu.cas.cntgsym.formulario.FormularioActivity
 import edu.cas.cntgsym.foto.FotoActivity
 import edu.cas.cntgsym.persistenciavector.SpinnerVectorActivity
 import edu.cas.cntgsym.servicio.PlayActivity
+import edu.cas.cntgsym.workmanager.MiTareaProgramada
+import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         // startActivity(Intent(this, FotoActivity::class.java))
         //startActivity(Intent(this, BioActivity::class.java))
         //startActivity(Intent(this, DescargaActivity::class.java))
-        startActivity(Intent(this, PlayActivity::class.java))
+        //startActivity(Intent(this, PlayActivity::class.java))
         //startActivity()
         //Log.v(Constantes.ETIQUETA_LOG, "PRUEBA LOG VERBOSE")
         //mostrarAppsInstaladas()
@@ -74,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         gestionarPermisosNotis()
+        lanzarWorkManager()
 
     }
 
@@ -146,5 +156,40 @@ class MainActivity : AppCompatActivity() {
 
 
         dialogo.show()//lo muestro
+    }
+
+    fun lanzarWorkManager ()
+    {
+        //definimos restricciones opcionales
+        val constraints = Constraints.Builder()
+            //.setRequiredNetworkType(NetworkType.UNMETERED) // solo Wi-Fi
+            //.setRequiresBatteryNotLow(true)               // no ejecutar con batería baja
+            //.setRequiresCharging(true)                    // solo cuando esté cargando
+            .build()
+
+        //los datos de entrada al proceso en background
+        val inputData = workDataOf("USER_ID" to "val1235")
+
+        //creamos la petición (request)
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<MiTareaProgramada>(
+            15, TimeUnit.MINUTES // Periodicidad mínima: 15 minutos
+        )
+            .setConstraints(constraints)
+            .setInputData(inputData)
+            .build()
+
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork(
+                "MiTareaProgramada",                       // Nombre único
+                ExistingPeriodicWorkPolicy.KEEP,        // No reemplazar si ya existe
+                periodicWorkRequest
+            )
+
+        val tiempo = System.currentTimeMillis()+(60*1000*15)//(30*1000)//15 minutos
+        val dateformatter = SimpleDateFormat("E dd/MM/yyyy ' a las ' hh:mm:ss")
+        val mensaje = dateformatter.format(tiempo)
+        Log.d(Constantes.ETIQUETA_LOG, "TAREA PROGRAMADA PARA $mensaje")
+        Toast.makeText(this, "TAREA PROGRAMADA para $mensaje", Toast.LENGTH_LONG).show()
+
     }
 }
