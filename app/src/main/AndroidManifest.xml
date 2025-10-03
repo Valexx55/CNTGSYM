@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <!--
  con esta etiqueta avisamos: esta app usa la cámara
     si ponemos required a true y no tenemos cámara, esta app no nos sale en la tienda
@@ -75,11 +75,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CNTGSYM">
+        <activity
+            android:name=".bdpersona.ActivityPersonaDB"
+            android:exported="false" />
+
         <service
             android:name=".servicio.PlayService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="mediaPlayback"/>
+            android:foregroundServiceType="mediaPlayback" />
 
         <receiver android:name=".servicio.PlayService$NotificationCloseButtonHandler" />
         <receiver android:name=".servicio.PlayService$NotificationPlayButtonHandler" />
