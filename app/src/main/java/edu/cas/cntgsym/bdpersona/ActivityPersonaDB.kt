@@ -23,7 +23,9 @@ import edu.cas.cntgsym.R
 import edu.cas.cntgsym.bdpersona.entity.Persona
 import edu.cas.cntgsym.bdpersona.viewmodel.PersonaViewModel
 import edu.cas.cntgsym.databinding.ActivityPersonaDbBinding
+import edu.cas.cntgsym.util.Constantes
 import kotlin.getValue
+import kotlin.system.measureNanoTime
 
 
 class ActivityPersonaDB : AppCompatActivity() {
@@ -73,7 +75,12 @@ class ActivityPersonaDB : AppCompatActivity() {
     }
 
     fun insertarPersona(view: View) {
-        personaViewModel.insertar(Persona(nombre ="vale", edad =40))
+
+        val msInsertar =  measureNanoTime {
+            personaViewModel.insertar(Persona(nombre ="vale", edad =40))
+        }
+        Log.d(Constantes.ETIQUETA_LOG, "Ha consumido $msInsertar")
+
     }
 
     //este objeto entra en funcionamiento cuando arrastro o deslizo un elmento de la lista/item
